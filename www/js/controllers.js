@@ -41,7 +41,7 @@ angular.module('starter.controllers', [])
     for (var i = 0; i < assignment.work.length; i++) {
       features.push({attributes: {OBJECTID: assignment.work[i].oid, dueDate: assignment.dueDate}});
     }
-    $http.post('http://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/assignments_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/updateFeatures',
+    $http.post('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/assignments_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/updateFeatures',
       {f: 'json', features: JSON.stringify(features), token: $scope.token},
       {headers: {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"},
           transformRequest: function(obj) {
@@ -59,10 +59,10 @@ angular.module('starter.controllers', [])
     $http.get('https://ral.maps.arcgis.com/sharing/rest/community/users/'+$scope.username+'?f=json&token=' + $scope.token).then(function (response) {
       $scope.user = response.data;
     });
-    $http.get('http://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/workers_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/query?f=json&where=userId=\'' +$scope.username + '\'&outFields=*&token=' + $scope.token).then(function (response) {
+    $http.get('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/workers_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/query?f=json&where=userId=\'' +$scope.username + '\'&outFields=*&token=' + $scope.token).then(function (response) {
       if (response.data.features.length > 0) {
         var oid = response.data.features[0].attributes.OBJECTID;
-        $http.get('http://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/assignments_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/query?f=json&orderByFields=location&where=workerId=\'' + oid + '\'&outFields=*&token=' + $scope.token).then(function (response) {
+        $http.get('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/assignments_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/query?f=json&orderByFields=location&where=workerId=\'' + oid + '\'&outFields=*&token=' + $scope.token).then(function (response) {
           var d, h, m, dueTime, ampm = null;
           var item = null;
           for (var i = 0; i < response.data.features.length; i++) {
