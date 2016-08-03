@@ -60,7 +60,12 @@ angular.module('starter.controllers', [])
     $scope.token = match[1];
     $scope.username = unescape(match.input.substr(match.input.indexOf('username')).split('=')[1]);
     $http.get('https://ral.maps.arcgis.com/sharing/rest/community/users/'+$scope.username+'?f=json&token=' + $scope.token).then(function (response) {
-      $scope.user = response.data;
+      if (response.data.error) {
+        $scope.error = response.data.error.message;
+        $scope.spin = false;
+      } else {
+        $scope.user = response.data;
+      }
     });
     $http.get('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/workers_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/query?f=json&where=userId=\'' +$scope.username + '\'&outFields=*&token=' + $scope.token).then(function (response) {
       if (response.data.features.length > 0) {
@@ -97,6 +102,8 @@ angular.module('starter.controllers', [])
           $scope.spin = false;  
           console.log($scope.data);
         });
+      } else {
+        $scope.error = 'No Assignments Scheduled';
       }
     });
   }
