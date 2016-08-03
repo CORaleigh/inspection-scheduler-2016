@@ -5,3 +5,15 @@
 .bar-positive p {
 	color: white;
 }
+
+div.spinner {
+  margin: auto;
+  position: absolute;
+  top: 200px; left: 0; bottom: 0; right: 0;
+  height: 85px;
+  text-align: center;
+}
+.spinner svg {
+  width: 19% !important;
+  height: 85px !important;
+}

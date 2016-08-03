@@ -4,10 +4,12 @@ angular.module('starter.controllers', [])
   $scope.redirect = window.location.href;
   var lastLocation = null;
   $scope.data = [];
+  $scope.spin = false;
   $scope.login = function () {
     var clientId = 'X3pxPFIacVjSBAHW';
     var redirectUri = $scope.redirect;
     window.open('https://www.arcgis.com/sharing/rest/oauth2/authorize?client_id='+clientId+'&response_type=token&expiration=20160&redirect_uri=' + window.encodeURIComponent(redirectUri), 'oauth-window', 'height=400,width=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes');
+    
   }
   $scope.times = [
     {label: '8:00 AM', hour: 8, minute: 0}, 
@@ -54,6 +56,7 @@ angular.module('starter.controllers', [])
       });
   }
   if (match) {
+    $scope.spin = true;
     $scope.token = match[1];
     $scope.username = unescape(match.input.substr(match.input.indexOf('username')).split('=')[1]);
     $http.get('https://ral.maps.arcgis.com/sharing/rest/community/users/'+$scope.username+'?f=json&token=' + $scope.token).then(function (response) {
@@ -65,6 +68,7 @@ angular.module('starter.controllers', [])
         $http.get('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/assignments_68ce0efa1dbe41e688fa53865e4be017/FeatureServer/0/query?f=json&orderByFields=location&where=workerId=\'' + oid + '\'&outFields=*&token=' + $scope.token).then(function (response) {
           var d, h, m, dueTime, ampm = null;
           var item = null;
+
           for (var i = 0; i < response.data.features.length; i++) {
             d = new Date(response.data.features[i].attributes.dueDate);
             h = d.getHours() > 12 ? d.getHours() - 12 : d.getHours();
@@ -90,6 +94,7 @@ angular.module('starter.controllers', [])
             }            
             lastLocation = response.data.features[i].attributes.location;
           }
+          $scope.spin = false;  
           console.log($scope.data);
         });
       }

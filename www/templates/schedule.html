@@ -1,12 +1,15 @@
 <ion-view view-title="Inspection Scheduler">
-  <ion-content class="padding">
+  <ion-content class="padding has-header" >
     <a ng-show="!token" class="button button-block button-positive" ng-href="https://www.arcgis.com/sharing/rest/oauth2/authorize?client_id=X3pxPFIacVjSBAHW&response_type=token&expiration=20160&redirect_uri={{redirect}}}">Sign In With ArcGIS Online</a>
     <div ng-show="user" class="item item-avatar bar bar-header bar-positive">
       <img ng-src="https://ral.maps.arcgis.com/sharing/rest/community/users/{{username}}/info/{{user.thumbnail}}?token={{token}}">
       <h2>Welcome</h2>
       <p>{{user.fullName}}</p>
     </div> 
-    <ion-list>
+      <div class="spinner" ng-show="spin">
+        <ion-spinner icon="android"></ion-spinner> 
+      </div>
+      <ion-list>
       <label class="item item-input item-select" ng-repeat="assignment in data | orderBy: ['dueDate', 'location'] " ng-model="assignment">
         <div class="input-label">
           {{assignment.location}}
