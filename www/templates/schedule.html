@@ -17,11 +17,13 @@
         <div class="input-label">
           {{assignment.location}}
           <div><small style="margin-right: 1em;" ng-repeat="job in assignment.work">{{job.code}}</small></div>          
-          <div><small>{{assignment.notes}}</small></div>
+          <div><small>{{assignment.note}}</small></div>
         </div>
         <select ng-options="time as time.label for time in times track by time.label" ng-model="assignment.dueTime" ng-change="timeChanged(assignment)">
         </select>
-      </div>      
+      </div> 
+    <a ng-show="token" class="button button-block button-positive" ng-href="{{navUrl}}">Optimize Route</a>
+
     </ion-list>    
   </ion-content>
 </ion-view>
