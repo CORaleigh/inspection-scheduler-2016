@@ -106,6 +106,7 @@ angular.module('starter.controllers', [])
         });
       } else {
         $scope.error = 'No Assignments Scheduled';
+        $scope.spin = false;
       }
     });
   }
