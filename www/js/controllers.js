@@ -11,6 +11,41 @@ angular.module('starter.controllers', [])
     window.open('https://www.arcgis.com/sharing/rest/oauth2/authorize?client_id='+clientId+'&response_type=token&expiration=20160&redirect_uri=' + window.encodeURIComponent(redirectUri), 'oauth-window', 'height=400,width=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes');
     
   }
+  $scope.hours = [];
+  var i = 0, hour = null;
+  for (i = 0; i < 24; i += 1) {
+    if (i === 0) {
+      hour = {label: "12am", value: i};
+    } else if (i > 0 && i < 12) {
+      hour = {label: i + "am", value: i};
+    } else if (i === 12) {
+      hour = {label: i + "pm", value: i};      
+    } else {
+      hour = {label: (i - 12) + "pm", value: i}; 
+    }
+    $scope.hours.push(hour);
+  };
+  $scope.timeChanged1 = function (assignment) {
+    var features = [];
+    var hr = assignment.dueDate.getHours();
+    var mi = assignment.dueDate.getMinutes();
+    assignment.origDate.setHours(hr);
+    assignment.origDate.setMinutes(mi);
+    assignment.dueDate = assignment.origDate;
+
+    features.push({attributes: {OBJECTID: assignment.oid, dueDate: assignment.dueDate}});
+    $http.post('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/assignments_1542a408cfdd45f49da345d802197905/FeatureServer/0/updateFeatures',
+      {f: 'json', features: JSON.stringify(features), token: $scope.token},
+      {headers: {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"},
+          transformRequest: function(obj) {
+          var str = [];
+          for(var p in obj)
+          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+          return str.join("&");
+      },}).then(function (response) {
+        console.log(response);
+      });
+  };
   $scope.times = [
     {label: '8:00 AM', hour: 8, minute: 0}, 
     {label: '8:30 AM', hour: 8, minute: 30},  
@@ -68,6 +103,7 @@ angular.module('starter.controllers', [])
       }
     });
     $http.get('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/workers_1542a408cfdd45f49da345d802197905/FeatureServer/0/query?f=json&where=userId=\'' +$scope.username + '\'&outFields=*&token=' + $scope.token).then(function (response) {
+      console.log(response.data.features)
       if (response.data.features.length > 0) {
         var oid = response.data.features[0].attributes.OBJECTID;
         $http.get('https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/assignments_1542a408cfdd45f49da345d802197905/FeatureServer/0/query?f=json&orderByFields=location&where=workerId=\'' + oid + '\'&outFields=*&token=' + $scope.token).then(function (response) {
@@ -93,7 +129,7 @@ angular.module('starter.controllers', [])
               if (item) {
                 $scope.data.push(item);
               }
-              item = {location: response.data.features[i].attributes.location, notes: response.data.features[i].attributes.notes,dueDate: response.data.features[i].attributes.dueDate, dueTime: dueTime, work: [{oid: response.data.features[i].attributes.OBJECTID, permit: response.data.features[i].attributes.workOrderId, code: response.data.features[i].attributes.code}]}
+              item = {oid: response.data.features[i].attributes.OBJECTID, location: response.data.features[i].attributes.location, notes: response.data.features[i].attributes.notes, origDate: new Date(response.data.features[i].attributes.dueDate), dueDate: new Date(response.data.features[i].attributes.dueDate), dueTime: dueTime, work: [{oid: response.data.features[i].attributes.OBJECTID, permit: response.data.features[i].attributes.workOrderId, code: response.data.features[i].attributes.code}]}
             }
             if (i === response.data.features.length - 1) {
               $scope.data.push(item);

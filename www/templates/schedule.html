@@ -13,16 +13,19 @@
         <ion-spinner icon="android"></ion-spinner> 
       </div>
       <ion-list>
-      <div class="item item-input item-select" ng-repeat="assignment in data | orderBy: ['dueDate', 'location'] " ng-model="assignment">
-        <div class="input-label">
+<!--       <div class="item item-input item-select" ng-repeat="assignment in data | orderBy: ['dueDate', 'location'] " ng-model="assignment"> -->
+<!--         <div class="input-label">
           {{assignment.location}}
           <div><small style="margin-right: 1em;" ng-repeat="job in assignment.work">{{job.code}}</small></div>          
           <div><small>{{assignment.note}}</small></div>
         </div>
         <select ng-options="time as time.label for time in times track by time.label" ng-model="assignment.dueTime" ng-change="timeChanged(assignment)">
-        </select>
-      </div> 
-    <a ng-show="token" class="button button-block button-positive" href="{{navUrl}}">Optimize Route</a>
+        </select> -->
+        <div class="item" ion-datetime-picker time am-pm ng-repeat="assignment in data | orderBy: ['dueDate'] " ng-model="assignment.dueDate" ng-change="timeChanged1(assignment)">
+            <div style="float:left">{{assignment.location}}</div><div style="float:right">{{assignment.dueDate| date: "h:mm a"}}</div>
+        </div>        
+<!--       </div> 
+ -->    <a ng-show="token" class="button button-block button-positive" href="{{navUrl}}">Optimize Route</a>
 
     </ion-list>    
   </ion-content>
